@@ -1,0 +1,770 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MySql.Data.MySqlClient;
+
+namespace Shoprite_Inventory_Management_System
+{
+    public partial class Admin_Screen : Form
+    {
+        const string connectionString = "Server = localhost; Database=inventorysystem;User id=root;Password=Eselase12/.;";
+       // MySqlConnection connection = new MySqlConnection(connectionString);
+        MySqlDataReader reader;
+
+        public Admin_Screen()
+        {
+            InitializeComponent();
+        }
+
+
+        
+        
+            private void letproductButton()
+            {
+            accountDataGridView.AllowUserToAddRows = false;
+            accountDataGridView.Columns.Clear();
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn userid = new DataGridViewTextBoxColumn();
+            userid.Name = "User_ID";
+            userid.HeaderText = "User_ID";
+            userid.DataPropertyName = "User_ID";
+            userid.Width =100;
+            accountDataGridView.Columns.Insert(0, userid);
+
+            
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn surname = new DataGridViewTextBoxColumn();
+            surname.Name = "Surname";
+            surname.HeaderText = "Surname";
+            surname.DataPropertyName = "Surname";
+            surname.Width =100;
+            accountDataGridView.Columns.Insert(1, surname);
+
+            
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn othername = new DataGridViewTextBoxColumn();
+            othername.Name = "Othername";
+            othername.HeaderText = "Othername";
+            othername.DataPropertyName = "Othername";
+            othername.Width =100;
+            accountDataGridView.Columns.Insert(2, othername);
+
+            
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn username = new DataGridViewTextBoxColumn();
+            username.Name = "Username";
+            username.HeaderText = "Username";
+            username.DataPropertyName = "Username";
+            username.Width =100;
+            accountDataGridView.Columns.Insert(3, username);
+
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn email = new DataGridViewTextBoxColumn();
+            email.Name = "Email";
+            email.HeaderText = "Email";
+            email.DataPropertyName = "Email";
+            email.Width =100;
+            accountDataGridView.Columns.Insert(4, email);
+
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn phone = new DataGridViewTextBoxColumn();
+            phone.Name = "PhoneNumber";
+            phone.HeaderText = "PhoneNumber";
+            phone.DataPropertyName = "PhoneNumber";
+            phone.Width =100;
+            accountDataGridView.Columns.Insert(5, phone);
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn gender = new DataGridViewTextBoxColumn();
+            gender.Name = "Gender";
+            gender.HeaderText = "Gender";
+            gender.DataPropertyName = "Gender";
+            gender.Width =100;
+            accountDataGridView.Columns.Insert(6, gender);
+
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn role = new DataGridViewTextBoxColumn();
+            role.Name = "Role";
+            role.HeaderText = "Role";
+            role.DataPropertyName = "Role";
+            role.Width =100;
+            accountDataGridView.Columns.Insert(7, role);
+
+
+            //Bind the DataGridView.
+            accountDataGridView.DataSource = null;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SELECT User_ID, Surname, Othername, Username, Email , PhoneNumber,  Gender, Role FROM User", con))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        using (DataTable dt = new DataTable())
+                        {
+                            sda.Fill(dt);
+                            accountDataGridView.DataSource = dt;
+                        }
+                    }
+                }
+            }
+
+            //Add the Button Column.
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+            buttonColumn.HeaderText = "Delete";
+            buttonColumn.Width = 60;
+            buttonColumn.Name = "buttonColumn";
+            buttonColumn.Text = "Delete";
+            buttonColumn.UseColumnTextForButtonValue = true;
+            accountDataGridView.Columns.Insert(8, buttonColumn);
+
+
+            //Add the Button Column.
+            DataGridViewButtonColumn updatebuttonColumn = new DataGridViewButtonColumn();
+            updatebuttonColumn.HeaderText = "Update";
+            updatebuttonColumn.Width = 60;
+            updatebuttonColumn.Name = "updatebuttonColumn";
+            updatebuttonColumn.Text = "update";
+            updatebuttonColumn.UseColumnTextForButtonValue = true;
+            accountDataGridView.Columns.Insert(9, updatebuttonColumn);
+
+
+
+
+        }
+
+
+
+
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.BindGrid();
+        }
+
+        //private void form()
+        //{
+        //    this.letproductButton();
+        //}
+
+        private void FormLoad(object sender, EventArgs e)
+        {
+            this.myBindGrid();
+        }
+
+        private void myBindGrid()
+        {
+            productDataGridView.AllowUserToAddRows = false;
+            productDataGridView.Columns.Clear();
+
+            //Adding Columns to Grid
+            DataGridViewTextBoxColumn productid = new DataGridViewTextBoxColumn();
+            productid.Name = "Product_ID";
+            productid.HeaderText = "Product_ID";
+            productid.DataPropertyName = "Product_ID";
+            productid.Width =100;
+            productDataGridView.Columns.Insert(0, productid);
+
+
+            DataGridViewTextBoxColumn productname = new DataGridViewTextBoxColumn();
+            productname.HeaderText = "Product_Name";
+            productname.Name = "Product_Name";
+            productname.DataPropertyName = "Product_Name";
+            productname.Width = 100;
+            productDataGridView.Columns.Insert(1, productname);
+
+            DataGridViewColumn productprice = new DataGridViewTextBoxColumn();
+            productprice.HeaderText = "Unit_Price";
+            productprice.Name = "Unit_Price";
+            productprice.DataPropertyName = "Unit_Price";
+            productprice.Width = 100;
+            productDataGridView.Columns.Insert(2, productprice);
+
+
+            DataGridViewColumn categoryid = new DataGridViewTextBoxColumn();
+            categoryid.HeaderText = "Category_ID";
+            categoryid.Name = "Category_ID";
+            categoryid.DataPropertyName = "Category_ID";
+            categoryid.Width = 100;
+            productDataGridView.Columns.Insert(3, categoryid);
+
+
+            DataGridViewColumn productCode = new DataGridViewTextBoxColumn();
+            productCode.HeaderText = "Product_Code";
+            productCode.Name = "Product_Code";
+            productCode.DataPropertyName = "Product_Code";
+            productCode.Width = 100;
+            productCode.CellTemplate = new DataGridViewTextBoxCell();
+            productDataGridView.Columns.Insert(4, productCode);
+
+
+            DataGridViewColumn description = new DataGridViewTextBoxColumn();
+            description.HeaderText = "Discription";
+            description.Name = "Discription";
+            description.DataPropertyName = "Discription";
+            description.Width = 100;
+            description.CellTemplate = new DataGridViewTextBoxCell();
+            productDataGridView.Columns.Insert(5, description);
+
+
+            DataGridViewColumn qunatity = new DataGridViewTextBoxColumn();
+            qunatity.HeaderText = "Quantity";
+            qunatity.Name = "Quantity";
+            qunatity.DataPropertyName = "Quantity";
+            qunatity.Width = 100;
+            qunatity.CellTemplate = new DataGridViewTextBoxCell();
+            productDataGridView.Columns.Insert(6, qunatity);
+
+
+            //Bind the DataGridView.
+            productDataGridView.DataSource = null;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SELECT Product_ID, Product_Name, Unit_Price , Category_ID,  Product_Code, Discription, Quantity FROM Product", con))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        using (DataTable dt = new DataTable())
+                        {
+                            sda.Fill(dt);
+                            productDataGridView.DataSource = dt;
+                        }
+                    }
+                }
+            }
+
+            //Add the Button Column.
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+            buttonColumn.HeaderText = "Delete";
+            buttonColumn.Width = 60;
+            buttonColumn.Name = "buttonColumn";
+            buttonColumn.Text = "Delete";
+            buttonColumn.UseColumnTextForButtonValue = true;
+            productDataGridView.Columns.Insert(7, buttonColumn);
+
+
+            //Add the Button Column.
+            DataGridViewButtonColumn updatebuttonColumn = new DataGridViewButtonColumn();
+            updatebuttonColumn.HeaderText = "Update";
+            updatebuttonColumn.Width = 60;
+            updatebuttonColumn.Name = "updatebuttonColumn";
+            updatebuttonColumn.Text = "update";
+            updatebuttonColumn.UseColumnTextForButtonValue = true;
+            productDataGridView.Columns.Insert(8,updatebuttonColumn);
+
+        }
+
+        private void BindGrid()
+        {
+            //Hide the last blank line.
+            catDataGridView.AllowUserToAddRows = false;
+
+            
+
+            //Clear Columns.
+            catDataGridView.Columns.Clear();
+
+
+            //Add Columns.
+            DataGridViewTextBoxColumn category = new DataGridViewTextBoxColumn();
+            category.Name = "Category_ID";
+            category.HeaderText = "Category_ID";
+            category.DataPropertyName = "Category_ID";
+            category.Width = 100;
+            catDataGridView.Columns.Insert(0, category);
+
+            DataGridViewColumn name = new DataGridViewTextBoxColumn();
+            name.HeaderText = "Category_Name";
+            name.Name = "Category_Name";
+            name.DataPropertyName = "Category_Name";
+            name.Width = 100;
+            catDataGridView.Columns.Insert(1, name);
+
+            DataGridViewColumn country = new DataGridViewTextBoxColumn();
+            country.Name = "Category_Code";
+            country.HeaderText = "Category_Code";
+            country.DataPropertyName = "Category_Code";
+            country.Width = 100;
+            catDataGridView.Columns.Insert(2, country);
+
+            DataGridViewColumn description = new DataGridViewTextBoxColumn();
+            description.Name = "Description";
+            description.HeaderText = "Description";
+            description.DataPropertyName = "Description";
+            description.Width = 100;
+            catDataGridView.Columns.Insert(3, description);
+
+            //Bind the DataGridView.
+            catDataGridView.DataSource = null;
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("SELECT Category_ID, Category_Name, Category_Code, Description FROM Category", con))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    using (MySqlDataAdapter sda = new MySqlDataAdapter(cmd))
+                    {
+                        using (DataSet dt = new DataSet())
+                        {
+                            sda.Fill(dt);
+                            catDataGridView.ReadOnly = true;
+                            catDataGridView.DataSource = dt.Tables[0];
+                        }
+                    }
+                }
+            }
+
+            //Add the Button Column.
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+            buttonColumn.HeaderText = "DELETE";
+            buttonColumn.Width = 60;
+            buttonColumn.Name = "buttonColumn";
+            buttonColumn.Text = "Delete";
+            buttonColumn.UseColumnTextForButtonValue = true;
+            catDataGridView.Columns.Insert(4, buttonColumn);
+
+            //Add the Button Column.
+            DataGridViewButtonColumn updatebuttonColumn = new DataGridViewButtonColumn();
+            updatebuttonColumn.HeaderText = "Update";
+            updatebuttonColumn.Width = 60;
+            updatebuttonColumn.Name = "updatebuttonColumn";
+            updatebuttonColumn.Text = "Update";
+            updatebuttonColumn.UseColumnTextForButtonValue = true;
+            catDataGridView.Columns.Insert(5, updatebuttonColumn);
+        }
+
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+       
+
+        private void cancelButtonClick(object sender, EventArgs e)
+        {
+            this.Hide();
+            categoryPanel.Show();
+        }
+
+       
+
+        
+
+        private void addCatButton(object sender, EventArgs e)
+        {
+            CategoryForm category = new CategoryForm();
+            category.ShowDialog();
+            //Generators generator = new Generators();
+            //try
+            //{
+            //    const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //    //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            //    MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            //    sqlConnection.Open();
+
+            //    string sqlStatement =
+            //        $"INSERT INTO `Category`(`Category_Name`, `Description`,`Category_Code`) VALUES ('{catTextBox.Text}', '{catDisTextBox.Text}', '{generator.randomProductcode(5)}')";
+
+            //    //WriteLine(sqlStatement);
+
+            //    MySqlCommand sqlCommand = new MySqlCommand(sqlStatement, sqlConnection);
+
+            //    sqlCommand.ExecuteNonQuery();
+
+            //    MessageBox.Show($"{this.catTextBox.Text} has been added successfully");
+
+
+            //}
+            //catch (Exception eb)
+            //{
+            //    MessageBox.Show($"An error occured {eb.StackTrace}");
+            //    throw;
+            //}
+        }
+
+        private void catcancelBut(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+
+        }      
+
+        private void catButtonClick(object sender, EventArgs e)
+        {
+            categoryPanel.Enabled = true;
+            categoryPanel.Visible= true;
+            categoryPanel.BringToFront();
+        }
+
+        private void addProductButton(object sender, EventArgs e)
+        {
+
+            Screens screens = new Screens();
+            screens.ShowDialog();
+
+            //Generators generator = new Generators();
+            //try
+            //{
+            //    const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //    //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            //    MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            //    sqlConnection.Open();
+
+            //    string sqlStatement =
+            //        $"INSERT INTO `Category`(`Category_Name`, `Description`,`Category_Code`) VALUES ('{catTextBox.Text}', '{catDisTextBox.Text}', '{generator.randomProductcode(5)}')";
+
+            //    //WriteLine(sqlStatement);
+
+            //    MySqlCommand sqlCommand = new MySqlCommand(sqlStatement, sqlConnection);
+
+            //    sqlCommand.ExecuteNonQuery();
+
+            //    MessageBox.Show($"{this.catTextBox.Text} has been added successfully");
+
+
+            //}
+            //catch (Exception eb)
+            //{
+            //    MessageBox.Show($"An error occured {eb.StackTrace}");
+            //    throw;
+            //}
+        }
+
+        private void productButtonClick(object sender, EventArgs e)
+        {
+            productPanel.Enabled = true;
+            productPanel.Visible = true;
+            productPanel.BringToFront();
+        }
+
+        private void addAccountButton(object sender, EventArgs e)
+        {
+            AccountForm account = new AccountForm();
+            account.ShowDialog();
+            //Generators generator = new Generators();
+            //try
+            //{
+            //    const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //    //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            //    MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            //    sqlConnection.Open();
+
+            //    string sqlStatement =
+            //        $"INSERT INTO `Category`(`Category_Name`, `Description`,`Category_Code`) VALUES ('{catTextBox.Text}', '{catDisTextBox.Text}', '{generator.randomProductcode(5)}')";
+
+            //    //WriteLine(sqlStatement);
+
+            //    MySqlCommand sqlCommand = new MySqlCommand(sqlStatement, sqlConnection);
+
+            //    sqlCommand.ExecuteNonQuery();
+
+            //    MessageBox.Show($"{this.catTextBox.Text} has been added successfully");
+
+
+            //}
+            //catch (Exception eb)
+            //{
+            //    MessageBox.Show($"An error occured {eb.StackTrace}");
+            //    throw;
+            //}
+        }
+
+        private void accountButtonClick(object sender, EventArgs e)
+        {
+            accountPanel.Enabled = true;
+            accountPanel.Visible = true;
+            accountPanel.BringToFront();
+        }
+
+        private void productPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void catAddButton_Click(object sender, EventArgs e)
+        {
+            CategoryForm category = new CategoryForm();
+            category.ShowDialog();
+        }
+
+        private void accountbuttonClick(object sender, EventArgs e)
+        {
+            AccountForm accountForm = new AccountForm();
+            accountForm.ShowDialog();
+        }
+
+        private void catbuttonClick(object sender, EventArgs e)
+        {
+            CategoryForm catForm = new CategoryForm();
+            catForm.ShowDialog();
+        }
+
+        private void productButton(object sender, EventArgs e)
+        {
+            Screens screens = new Screens();
+            screens.ShowDialog();
+        }
+
+        private void refreshButton(object sender, EventArgs e)
+        {
+
+        }
+
+        public void refreshButtonClick(object sender, EventArgs e)
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            sqlConnection.Open();
+
+            string statement = $"SELECT * FROM User";
+            MySqlCommand command = new MySqlCommand(statement,sqlConnection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            // DataSet dataSet = new DataSet();
+            DataTable data = new DataTable();
+            adapter.Fill(data);
+            accountDataGridView.ReadOnly = true;
+            accountDataGridView.DataSource = data;
+            this.letproductButton();
+            sqlConnection.Close();
+        }
+
+        private void categoryPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        public void catRefreshButton(object sender, EventArgs e)
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            sqlConnection.Open();
+
+            //string statement = $"SELECT * FROM Category";
+            //MySqlCommand command = new MySqlCommand(statement, sqlConnection);
+            //MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            //DataSet dataSet = new DataSet();
+            //adapter.Fill(dataSet);
+            //catDataGridView.ReadOnly = true;
+            //catDataGridView.DataSource = dataSet.Tables[0];
+            //sqlConnection.Close
+            //
+
+
+            string statement = $"SELECT * FROM Category";
+            // MySqlCommand command = new MySqlCommand(statement, sqlConnection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(statement, sqlConnection);
+            // DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+            adapter.Fill(dataTable);
+            //catDataGridView.ReadOnly = true;
+            catDataGridView.DataSource = dataTable;
+        }
+
+        public void cateButton()
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+           // sqlConnection.Open();
+
+            string statement = $"SELECT * FROM Category";
+           // MySqlCommand command = new MySqlCommand(statement, sqlConnection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(statement,sqlConnection);
+            // DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+            adapter.Fill(dataTable);
+            //catDataGridView.ReadOnly = true;
+            catDataGridView.DataSource = dataTable;
+          //  sqlConnection.Close();
+        }
+
+        //public void productRefreshButton(object sender, EventArgs e)
+        //{
+        //    const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+        //    //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+        //    MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+        //    sqlConnection.Open();
+
+        //    string statement = $"SELECT * FROM Product";
+        //    MySqlCommand command = new MySqlCommand(statement, sqlConnection);
+        //    MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+        //    DataSet dataSet = new DataSet();
+        //    adapter.Fill(dataSet);
+        //    catDataGridView.ReadOnly = true;
+        //    productDataGridView.DataSource = dataSet.Tables[0];
+        //    sqlConnection.Close();
+        //}
+
+        public void productButton()
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            sqlConnection.Open();
+
+            string statement = $"SELECT * FROM Product";
+            MySqlCommand command = new MySqlCommand(statement, sqlConnection);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            DataSet dataSet = new DataSet();
+            adapter.Fill(dataSet);
+            productDataGridView.ReadOnly = true;
+            productDataGridView.DataSource = dataSet.Tables[0];
+            sqlConnection.Close();
+        }
+
+        private void updateProdButton(object sender, EventArgs e)
+        {
+
+        }
+
+        private void delProdButton(object sender, EventArgs e)
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            sqlConnection.Open();
+
+            string statement = $"DELETE FROM `Product`";
+
+            productDataGridView.SelectedRows.Clear();
+        }
+
+        private void delAccountButton(object sender, EventArgs e)
+        {
+            accountDataGridView.SelectedRows.Clear();
+        }
+
+        private void updateAccButton(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateCateButton(object sender, EventArgs e)
+        {
+
+        }
+
+        private void deleteCateButton(object sender, EventArgs e)
+        {
+            const string connectionString = "server = localhost; Initial Catalog=inventorysystem;User id=root;Password=Eselase12/.;";
+            //const String connection = "server = localhost; database=inventorysystem; uid=root; pwd=Eselase12/.;";
+            MySqlConnection sqlConnection = new MySqlConnection(connectionString);
+            sqlConnection.Open();
+            CategoryForm category = new CategoryForm();
+            string statement = $"DELETE FROM `Category` WHERE `Category_Name` = '"+catDataGridView.DataMember.Equals(category.catNameTextBox.Text)  +"'";
+        }
+
+        private void catDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 4)
+            {
+                DataGridViewRow row = catDataGridView.Rows[e.RowIndex];
+                if (MessageBox.Show(string.Format("Do you want to delete Category ID: {0}?", row.Cells["Category_ID"].Value), "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    using (MySqlConnection con = new MySqlConnection(connectionString))
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand(String.Format("DELETE FROM Category WHERE Category_ID = {0}", row.Cells["Category_ID"].Value), con))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@Category_ID", row.Cells["Category_ID"].Value);
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+
+                    this.BindGrid();
+                }
+            }
+
+
+
+
+            if (e.ColumnIndex == 5)
+            {
+                DataGridViewRow row = catDataGridView.Rows[e.RowIndex];
+                if (MessageBox.Show(string.Format("Do you want to delete Category ID: {0}?", row.Cells["Category_ID"].Value), "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    using (MySqlConnection con = new MySqlConnection(connectionString))
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand(String.Format("DELETE FROM Category WHERE Category_ID = {0}", row.Cells["Category_ID"].Value), con))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@Category_ID", row.Cells["Category_ID"].Value);
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+
+                    this.BindGrid();
+                }
+            }
+
+
+
+        }
+
+        private void productDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 4)
+            {
+                DataGridViewRow row = catDataGridView.Rows[e.RowIndex];
+                if (MessageBox.Show(string.Format("Do you want to delete Category ID: {0}?", row.Cells["Category_ID"].Value), "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    using (MySqlConnection con = new MySqlConnection(connectionString))
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand(String.Format("DELETE FROM Category WHERE Category_ID = {0}", row.Cells["Category_ID"].Value), con))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@Category_ID", row.Cells["Category_ID"].Value);
+                            con.Open();
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+                    }
+
+                    this.BindGrid();
+                }
+            }
+
+        }
+
+        private void accountPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void accountDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void form(object sender, EventArgs e)
+        {
+            this.letproductButton();
+        }
+    }
+}
